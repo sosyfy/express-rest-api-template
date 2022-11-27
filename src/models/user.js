@@ -1,8 +1,6 @@
-const mongoose = require('mongoose')
-const validator = require('validator')
-const bcrypt = require('bcryptjs')
-const jwt = require("jsonwebtoken")
-const crypto = require('crypto')
+import mongoose from 'mongoose'
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 
 const roles = ['user', 'admin']
 
@@ -137,6 +135,7 @@ class UserClass {
     }
 }
 
-schema.loadClass(UserClass)
+userSchema.loadClass(UserClass)
 
-module.exports = mongoose.model('User', userSchema )
+const User = mongoose.model('User', userSchema)
+export default User 

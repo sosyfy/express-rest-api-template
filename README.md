@@ -1,4 +1,4 @@
-"# express-rest-api-template" 
+
 A Boilerplate/Generator/Starter template for building RESTful APIs and microservices using modern Javascript, Node.js, Express and MongoDB.
 
 This is a highly opinionated and fully featured starter template, if you don't need some feature or dependency, just delete it.
@@ -32,4 +32,4 @@ npm run dev        # starts server in watch mode, waiting for file changes
 
 ## Environment Variables
 
-Use the .en.example file provided 
+Use the .env.example file provided 

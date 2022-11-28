@@ -1,8 +1,8 @@
 module.exports = {
     openapi: "3.0.3", 
     info: {
-      title: "Simple Todos API", 
-      description: "A simple todos API",
+      title: "express-rest-template", 
+      description: "Express boilerplate for building RESTful APIs",
       version: "1.0.0", 
       contact: {
         name: "Sospeter Karranja", 

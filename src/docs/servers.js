@@ -1,9 +1,18 @@
+const config = require('#config')
+const { port } = config
+
 module.exports = {
     servers: [
       {
-        url: "http://localhost:4000/todos", 
-        description: "Local server", 
+        description: "Development", 
+        url: `http://localhost:${port}`, 
       },
+
+      {
+        description: "Production", 
+        url: `http://localhost:${port}`, 
+      },
+
     ],
   };
   

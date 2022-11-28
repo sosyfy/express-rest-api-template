@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcryptjs'
-import crypto from 'crypto'
+const  mongoose = require('mongoose')
+const  bcrypt = require('bcryptjs')
+const  crypto = require('crypto')
 
 const roles = ['user', 'admin']
 
@@ -137,5 +137,4 @@ class UserClass {
 
 userSchema.loadClass(UserClass)
 
-const User = mongoose.model('User', userSchema)
-export default User 
+module.exports = mongoose.model('User', userSchema)

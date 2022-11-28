@@ -1,7 +1,8 @@
-import httpStatus from 'http-status'
-import openApiValidation from 'openapi-validator-middleware'
-import { APIError } from '#errors/common'
-export function errorHandlerMiddleware(err, req, res, _next) {
+const httpStatus = require('http-status')
+const openApiValidation = require(  'openapi-validator-middleware')
+const { APIError } = require('#errors/common')
+
+exports.errorHandlerMiddleware = function (err, req, res, _next) {
 
 
   if (err instanceof openApiValidation.InputValidationError) {
@@ -28,7 +29,7 @@ export function errorHandlerMiddleware(err, req, res, _next) {
   })
 }
 
-export function notFoundMiddleware(req, res, next) {
+exports.notFoundMiddleware = function (req, res, next) {
   const err = new APIError({
     type: 'not_found',
     title: 'Not found',

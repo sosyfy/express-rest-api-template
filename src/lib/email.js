@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer'
-import config from '#config'
+const nodemailer = require( 'nodemailer')
+const config = require( '#config')
 
 // SMTP is the main transport in Nodemailer for delivering messages.
 // SMTP is also the protocol used between almost all email hosts, so its truly universal.
@@ -35,6 +35,6 @@ async function sendMail(options ){
 
 
 
-export const verifyConnection = () => Promise.resolve(true)
+exports.verifyConnection = () => Promise.resolve(true)
 
-export default sendMail
+module.exports = sendMail

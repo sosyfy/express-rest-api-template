@@ -1,22 +1,23 @@
-import 'express-async-errors'
-import express  from "express"
-import cors from 'cors'
-import morgan from 'morgan'
-import cookieParser from "cookie-parser"
-import fileUpload from "express-fileupload"
-import xss from 'xss-clean'
-import hpp from 'hpp'
-import bodyParser from 'body-parser'
-import rateLimit from 'express-rate-limit'
-import helmet from 'helmet'
-import swaggerUi from 'swagger-ui-express'
-import YAML from 'yamljs'
+require( 'express-async-errors')
+const express = require("express")
+const cors = require( 'cors')
+const morgan = require( 'morgan')
+const cookieParser = require( "cookie-parser")
+const fileUpload = require( "express-fileupload")
+const xss = require( 'xss-clean')
+const hpp = require( 'hpp')
+const bodyParser = require( 'body-parser')
+const rateLimit = require( 'express-rate-limit')
+const helmet = require( 'helmet')
+const swaggerUI = require( 'swagger-ui-express')
+
 
 const app = express()
+
+const docs = require('../docs')
  
-// import openApiMidddlewares from '#middlewares/openapi'
-import v1routes from '#routes/v1/v1'
-// import * as swagger  from '#docs/swagger' assert { type: "json" };
+const v1routes = require( '#routes/v1/v1')
+
 
 
 
@@ -52,14 +53,12 @@ app.use(fileUpload())
 
 
 //& morgan middleware  to display logs on console of visited routes 
-app.use(morgan("tiny"))
+app.use(morgan("dev"))
 
 
 //& swagger ui documentation for api's 
-// const swaggerDocument = YAML.load(swagger)
 
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger));
-
+app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(docs));
 
 
 //& routes
@@ -67,4 +66,4 @@ app.use('/v1', v1routes)
 
 
 
-export default app
+module.exports =  app

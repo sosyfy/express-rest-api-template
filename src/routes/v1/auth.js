@@ -1,5 +1,5 @@
-import express from 'express'
-import * as controller from '#controllers/auth'
+const express = require('express')
+const controller = require( '#controllers/auth')
 
 const router = express.Router()
 
@@ -17,4 +17,4 @@ router
     .post(controller.logout)
 
 
-export default router
+module.exports = router

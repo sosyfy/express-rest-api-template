@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
-export async  function connect(uri) {
+exports.connect =  async function (uri) {
     await mongoose.connect(uri, {
         //& must add in order to not get any error masseges:
         useUnifiedTopology:true,
@@ -16,6 +16,6 @@ export async  function connect(uri) {
     return true
   }
   
-export async function disconnect() {
+exports.disconnect = async function () {
     await mongoose.disconnect()
   }

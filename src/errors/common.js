@@ -1,6 +1,6 @@
-import httpStatus from 'http-status'
+const httpStatus = require( 'http-status')
 
-export class APIError extends Error {
+ class APIError extends Error {
   constructor(options) {
     const { type, title, detail, cause, status = httpStatus.INTERNAL_SERVER_ERROR } = options
     super(title, { cause })
@@ -11,7 +11,7 @@ export class APIError extends Error {
   }
 }
 
-export class ValidationError extends APIError {
+class ValidationError extends APIError {
   constructor(options) {
     const { invalidParams, ...rest } = options
     super(rest)
@@ -19,7 +19,7 @@ export class ValidationError extends APIError {
   }
 }
 
-export class UserNotFoundError extends APIError {
+ class UserNotFoundError extends APIError {
   constructor(originalError) {
     super({
       type: 'user/not_found',
@@ -30,7 +30,7 @@ export class UserNotFoundError extends APIError {
   }
 }
 
-export class EmailAlreadyExistsError extends APIError {
+ class EmailAlreadyExistsError extends APIError {
   constructor(originalError) {
     super({
       type: 'user/invalid_email',
@@ -41,7 +41,7 @@ export class EmailAlreadyExistsError extends APIError {
   }
 }
 
-export class IncorrectEmailOrPasswordError extends APIError {
+class IncorrectEmailOrPasswordError extends APIError {
   constructor(originalError) {
     super({
       type: 'auth/incorrect_credentials',
@@ -51,3 +51,5 @@ export class IncorrectEmailOrPasswordError extends APIError {
     })
   }
 }
+
+module.exports = { IncorrectEmailOrPasswordError ,EmailAlreadyExistsError, APIError, UserNotFoundError ,ValidationError }

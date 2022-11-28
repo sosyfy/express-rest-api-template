@@ -1,8 +1,8 @@
-import http from 'node:http'
-import app from '#lib/server'
-import config from '#config'
-import dotenv from 'dotenv'
-import * as database from '#lib/database'
+const http = require('http')
+const app = require('#lib/server')
+const config = require('#config')
+const dotenv = require('dotenv')
+const database = require('#lib/database')
 
 dotenv.config()
 
@@ -27,4 +27,4 @@ function onListening() {
     console.log({ msg: `listening on http://localhost:${port}` })
   }
 
-await main()
+main()

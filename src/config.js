@@ -1,18 +1,12 @@
 
-import path from 'path'
-import dotenv from 'dotenv'
-
-
-const appPath = path.dirname(import.meta.url).replace('file:', '')
+const  path = require('path')
+const  dotenv = require('dotenv')
 
 dotenv.config()
-
  
-
-export default Object.freeze({
-    appPath,
+module.exports = Object.freeze({
     version: "0.0.0",
-    openApiPath: path.join(appPath, '../openapi.yaml'),
+    openApiPath:'../openapi.yaml',
     env: process.env.NODE_ENV,
     isProduction: process.env.NODE_ENV === 'production',
     port: process.env.PORT,

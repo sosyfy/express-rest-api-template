@@ -1,15 +1,15 @@
-import httpStatus from 'http-status'
-import { addDays, addMinutes, getUnixTime } from 'date-fns'
-import  User from '#models/user'
-import * as Errors from '#errors/common'
-import config from '#config'
-import sendMail from '#lib/email'
-import jwt from 'jwt-simple'
-import crypto from "crypto"
+const httpStatus = require('http-status')
+const { addDays, addMinutes, getUnixTime } = require('date-fns')
+const User = require( '#models/user')
+const Errors = require('#errors/common')
+const config = require( '#config')
+const sendMail = require( '#lib/email')
+const jwt = require( 'jwt-simple')
+const crypto = require( "crypto")
 
 
 // ? sign up a user function
-export async function signUp( req , res ,next ){
+exports.signUp =  async function ( req , res ,next ){
    try {
     const { email , password, name } = req.body 
     //& data validtion from frontend 
@@ -85,7 +85,7 @@ export async function signUp( req , res ,next ){
 }
 
 // ? Reset password and create new one function 
-export async function emailVerification ( req , res ,next ){
+exports.emailVerification = async function  ( req , res ,next ){
  
    try {
       //& get reset pasword token and encrypt it to match the Db one 
@@ -126,7 +126,7 @@ export async function emailVerification ( req , res ,next ){
 }
 
 // ? login user function with email and password 
-export async function  logInWithEmailAndPassword( req ,res ,next ){
+exports.logInWithEmailAndPassword =  async function ( req ,res ,next ){
   try {
    const { email , password } = req.body 
 
@@ -170,7 +170,7 @@ export async function  logInWithEmailAndPassword( req ,res ,next ){
 }
 
 // ? logout  user function 
-export async function logout ( req , res ,next ){
+exports.logout = async function  ( req , res ,next ){
     
    res.cookie('token' , null , { expires: new Date(Date.now()) , httpOnly : true } )
   
@@ -181,7 +181,7 @@ export async function logout ( req , res ,next ){
 }
 
 // ? Send forget password email function 
-export async function forgotPassword ( req , res ,next ){
+exports.forgotPassword = async function  ( req , res ,next ){
 
    const { email } = req.body 
      //& data validtion from frontend 
@@ -236,7 +236,7 @@ export async function forgotPassword ( req , res ,next ){
  }
  
  // ? Reset password and create new one function 
-export async function passwordReset ( req , res ,next ){
+exports.passwordReset = async function  ( req , res ,next ){
  
     try {
        //& get reset pasword token and encrypt it to match the Db one 
@@ -288,7 +288,7 @@ export async function passwordReset ( req , res ,next ){
 
 //? Update user password function 
 
-export async function passwordUpdate ( req , res ,next ) {
+exports.passwordUpdate = async function  ( req , res ,next ) {
    try {
    const { oldPassword, newPassword } = req.body
 

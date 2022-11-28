@@ -1,10 +1,8 @@
 import http from 'node:http'
-
 import app from '#lib/server'
 import config from '#config'
 import dotenv from 'dotenv'
 import * as database from '#lib/database'
-import * as email from '#lib/email'
 
 dotenv.config()
 

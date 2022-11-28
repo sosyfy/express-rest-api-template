@@ -1,9 +1,8 @@
-import swagger from 'swagger-ui-express'
-import YAML from 'yamljs'
-import config from '#config'
+const swagger = require( 'swagger-ui-express')
+const YAML = require( 'yamljs')
+const config = require( '#config')
 
-const spec = YAML.load('../../openapi.yaml')
-spec.info.version = config.version
+const spec = YAML.load(config.openApiPath)
 
 export default [swagger.serve, swagger.setup(spec)]
  

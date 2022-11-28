@@ -11,7 +11,8 @@ dotenv.config()
 
 export default Object.freeze({
     appPath,
-    openApiPath: "../openapi.yaml",
+    version: "0.0.0",
+    openApiPath: path.join(appPath, '../openapi.yaml'),
     env: process.env.NODE_ENV,
     isProduction: process.env.NODE_ENV === 'production',
     port: process.env.PORT,
@@ -26,6 +27,8 @@ export default Object.freeze({
     email: {
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
+      from: process.env.EMAIL_FROM,
+      service: process.env.EMAIL_SERVICE,
       username: process.env.EMAIL_USERNAME,
       password: process.env.EMAIL_PASSWORD,
     },

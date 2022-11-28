@@ -3,10 +3,12 @@ import { addDays, addMinutes, getUnixTime } from 'date-fns'
 import  User from '#models/user'
 import * as Errors from '#errors/common'
 import config from '#config'
+import sendMail from '#lib/email'
 import jwt from 'jwt-simple'
+import crypto from "crypto"
+
 
 // ? sign up a user function
-
 export async function signUp( req , res ,next ){
    try {
     const { email , password, name } = req.body 
@@ -21,23 +23,58 @@ export async function signUp( req , res ,next ){
             password,
             name
       })
+
     
-    //& sending a token after user creation
-    const token = createAccessToken(user)
-    const options = {
-      expires: token.expiresIn ,
-      httpOnly : true 
-    }
+    //& Create a token and save it in the database 
+    const emailVerificationToken = await user.getemailVerificationToken();
+
+    await  user.save({ validateBeforeSave: false })
+ 
+   //& Send the user an email Verification Token to their email 
+   const url = `${req.protocol}://${req.get('host')}/api/v1/password/reset/${forgotToken}`
+   const message = `Copy paste this link in our Url and hit enter \n\n ${url}`
+ 
+   try {
+     
+     await sendMail({
+         to:user.email ,
+         subject: "Verify your email",
+         html: message
+     })
     
-    //& remember not to send the password 
-   //  user.password = undefined 
+     res.status(httpStatus.OK).json({
+         success: true ,
+         message : "Email sent Successfully",
+         info: "Check your email and follow the steps to activate your account"
+     })
+ 
+   } catch (error) {
+     //& if the email wasnt sent we delete the  token from db 
+ 
+     user.emailVerificationToken = undefined
+     await  user.save({ validateBeforeSave: false })
+ 
+     //& send an error response 
+
+     return next( new Errors.ApiError())
+   }
+
+   // ! you can use this if you dont do email verification 
+
+   //  //& sending a token after user creation
+   //  const token = createAccessToken(user)
+   //  const options = {
+   //    expires: token.expiresIn ,
+   //    httpOnly : true 
+   //  }
     
-    res.status(httpStatus.CREATED).cookie('token', token.token , options ).json({
-      status : true,
-      message: "success",
-      token: token,
-      user : user.format() 
-    })
+    
+   //  res.status(httpStatus.CREATED).cookie('token', token.token , options ).json({
+   //    status : true,
+   //    message: "success",
+   //    token: token,
+   //    user : user.format() 
+   //  })
   
 
    } catch (error) {
@@ -47,9 +84,48 @@ export async function signUp( req , res ,next ){
    } 
 }
 
+// ? Reset password and create new one function 
+export async function emailVerification ( req , res ,next ){
+ 
+   try {
+      //& get reset pasword token and encrypt it to match the Db one 
+    const token = req.params.token 
+    const encryptedToken = crypto.createHash('sha256').update(token).digest("hex")
 
-// ? login user function 
+   //& get user with same encrypted token
+   const user = await User.findOne({ emailVerificationToken :encryptedToken})
+ 
+    if (!user ) {
+       return next( new Errors.ApiError())
+    }
 
+  //& save the emailVerified to Db and  delete the token 
+   
+   user.emailVerificationToken = undefined
+   user.emailVerified  = true
+
+   await user.save({ validateBeforeSave: false })
+    
+   //& sending a token after verification 
+    const newToken = createAccessToken(user)
+    const options = {
+      expires: token.expiresIn ,
+      httpOnly : true 
+    }
+    
+    res.status(httpStatus.CREATED).cookie('token', newToken.token , options ).json({
+      status : true,
+      message: "success",
+      token: newToken,
+      user : user.format() 
+    })
+
+   } catch (error) {
+      return next( new Errors.ApiError())
+   }
+}
+
+// ? login user function with email and password 
 export async function  logInWithEmailAndPassword( req ,res ,next ){
   try {
    const { email , password } = req.body 
@@ -93,9 +169,7 @@ export async function  logInWithEmailAndPassword( req ,res ,next ){
 
 }
 
-
 // ? logout  user function 
-
 export async function logout ( req , res ,next ){
     
    res.cookie('token' , null , { expires: new Date(Date.now()) , httpOnly : true } )
@@ -106,16 +180,151 @@ export async function logout ( req , res ,next ){
    }) 
 }
 
+// ? Send forget password email function 
+export async function forgotPassword ( req , res ,next ){
+
+   const { email } = req.body 
+     //& data validtion from frontend 
+ 
+     if(!email){
+        return next( new Errors.ApiError())
+     }
+     //&  check if user exists in the DB 
+ 
+    const user = await User.findOne({email})
+ 
+    if (!user) { 
+      return next( new Errors.UserNotFoundError())
+    }
+ 
+    //& Create a token and save it in the database 
+    const forgotToken = await user.getForgetPasswordToken();
+    await  user.save({ validateBeforeSave: false })
+ 
+   //& Send the user a reset pasword to their email 
+ 
+   const url = `${req.protocol}://${req.get('host')}/api/v1/password/reset/${forgotToken}`
+   const message = `Copy paste this link in our Url and hit enter \n\n ${url}`
+ 
+   try {
+     
+     await sendMail({
+         to:user.email ,
+         subject: "Password reset",
+         html:message
+     })
+    
+     res.status(httpStatus.OK).json({
+         success: true ,
+         message : "Email sent Successfully",
+         info: "Check your email and follow the steps to recover your account "
+     })
+ 
+   } catch (error) {
+     //& if the email wasnt sent we delete the  token from db 
+ 
+     user.forgotPasswordToken = undefined
+     user.forgotPasswordExpiry  = undefined
+     await  user.save({ validateBeforeSave: false })
+ 
+     //& send an error response 
+
+     return next( new Errors.ApiError())
+   }
+ 
+ 
+ }
+ 
+ // ? Reset password and create new one function 
+export async function passwordReset ( req , res ,next ){
+ 
+    try {
+       //& get reset pasword token and encrypt it to match the Db one 
+     const token = req.params.token 
+     const encryptedToken = crypto.createHash('sha256').update(token).digest("hex")
+ 
+    //& geet user with same encrypted token and not expired 
+ 
+     const user = await User.findOne({
+         forgotPasswordToken :encryptedToken, 
+         forgotPasswordExpiry: { $gt: Date.now()}
+     })
+ 
+     if (!user ) {
+        return next( new Errors.ApiError())
+     }
+ 
+   //& save the new password to Db and  delete the tokens 
+    user.password = req.body.password
+ 
+    user.forgotPasswordToken = undefined
+    user.forgotPasswordExpiry  = undefined
+ 
+    await  user.save({ validateBeforeSave: false })
+  
+  //& send user a new token     
+     //& sending a token after user creation
+     const newToken = createAccessToken(user)
+     const options = {
+       expires: token.expiresIn ,
+       httpOnly : true 
+     }
+     
+     //& remember not to send the password 
+    //  user.password = undefined 
+     
+     res.status(httpStatus.CREATED).cookie('token', newToken.token , options ).json({
+       status : true,
+       message: "success",
+       token: newToken,
+       user : user.format() 
+     })
+ 
+    } catch (error) {
+       return next( new Errors.ApiError())
+    }
+ }
 
 
+//? Update user password function 
+
+export async function passwordUpdate ( req , res ,next ) {
+   try {
+   const { oldPassword, newPassword } = req.body
+
+   //& data validtion from frontend 
+   if (!oldPassword) {
+      return next( new Errors.ApiError())
+   }
+   
+   //& get old password from Db and validate if it is same to the one sent 
+   const user = await User.findById(req.user.id).select("+password")
+
+   const isCorrectOldPassword = await user.isValidatedPassword(oldPassword)
+   
+   if (!isCorrectOldPassword) {
+      return next( new Errors.ApiError())
+   }
+
+  //& Update the password and send them a new login token 
+
+   user.password = newPassword
+
+   await user.save()
+
+   res.status(httpStatus.CREATED).json({
+     status : true,
+     message: "success",
+     user : user.format() 
+   })
+
+   } catch (error) {
+      return next( new Errors.ApiError())
+   }
+}
 
 
-
-
-
-
-
-
+//* Helper functions 
 
 function createAccessToken(user) {
    return {

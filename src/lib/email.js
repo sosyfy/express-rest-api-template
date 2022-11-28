@@ -6,17 +6,35 @@ import config from '#config'
 // if you dont want to use SMTP you can create your own transport here
 // such as an email service API or nodemailer-sendgrid-transport
 
-const transport = nodemailer.createTransport({
-  port: config.email.port,
-  host: config.email.host,
-  auth: {
-    user: config.email.username,
-    pass: config.email.password,
-  },
-  secure: false, 
-})
+async function sendMail(options ){
+  const transporter = nodemailer.createTransport({
+    service: config.email.service,
+    auth: {
+      user: config.email.username,
+      pass: config.email.password,
+    },
+    secure: false, 
+  })
+
+  const mailOptions = {
+    from: config.email.from ,
+    to: options.to ,
+    subject: options.subject,
+    html: options.html 
+  }
+
+  transporter.sendMail(mailOptions , (err, info)=>{
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  })
+  
+}
+
 
 
 export const verifyConnection = () => Promise.resolve(true)
 
-export default transport
+export default sendMail

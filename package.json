@@ -12,12 +12,12 @@
     "#models/*": "./src/models/*.js",
     "#routes/*": "./src/routes/*.js",
     "#services/*": "./src/services/*.js",
-    "#validations/*": "./src/validations/*.js"
+    "#docs/*": "./src/docs/*.json"
   },
   "main": "main.js",
   "scripts": {
     "dev": "nodemon src/main.js",
-    "start": "mode src/main.js"
+    "start": "node src/main.js"
   },
   "repository": {
     "type": "git",

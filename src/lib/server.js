@@ -6,13 +6,18 @@ import cookieParser from "cookie-parser"
 import fileUpload from "express-fileupload"
 import xss from 'xss-clean'
 import hpp from 'hpp'
+import bodyParser from 'body-parser'
 import rateLimit from 'express-rate-limit'
 import helmet from 'helmet'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yamljs'
+
 const app = express()
  
-
 // import openApiMidddlewares from '#middlewares/openapi'
 import v1routes from '#routes/v1/v1'
+// import * as swagger  from '#docs/swagger' assert { type: "json" };
+
 
 
 //& Allow Cross-Origin requests
@@ -37,8 +42,8 @@ app.use(hpp());
 
 //& reqular middlewares 
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({extended: true }))
-// app.use(authMiddleware)
 
 //& coookies and file upload 
 
@@ -51,7 +56,10 @@ app.use(morgan("tiny"))
 
 
 //& swagger ui documentation for api's 
-// app.use('/docs', ...openApiMidddlewares)
+// const swaggerDocument = YAML.load(swagger)
+
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagger));
+
 
 
 //& routes

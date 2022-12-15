@@ -20,7 +20,7 @@ This is a highly opinionated and fully featured starter template, if you don't n
 - Advanced Auth with cookies, email verification etc 
 - Integration with mailing service am using SendGrid but you can use any other of your preference 
 - configured package.json for simpler import routes. this can also be edited to your preference.
-- Well documented auth to undertand what is happening 
+- Well documented auth to understand what is happening 
 
 ## Getting Started
 

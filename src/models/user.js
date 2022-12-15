@@ -1,7 +1,6 @@
 const  mongoose = require('mongoose')
 const  bcrypt = require('bcryptjs')
 const  crypto = require('crypto')
-im
 const roles = ['user', 'admin']
 
 const userSchema = new mongoose.Schema(

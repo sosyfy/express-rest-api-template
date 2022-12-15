@@ -16,7 +16,10 @@
   "main": "main.js",
   "scripts": {
     "dev": "nodemon src/main.js",
-    "start": "node src/main.js"
+    "start": "node src/main.js",
+    "swagger-autogen": "node ./src/docs/swagger.js",
+    "swag": "node swagger.js"
+
   },
   "repository": {
     "type": "git",
@@ -57,6 +60,7 @@
     "nodemailer": "^6.8.0",
     "openapi-validator-middleware": "^3.2.6",
     "path": "^0.12.7",
+    "swagger-autogen": "^2.22.0",
     "swagger-ui-express": "^4.6.0",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1",

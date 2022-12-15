@@ -9,12 +9,12 @@ const hpp = require( 'hpp')
 const bodyParser = require( 'body-parser')
 const rateLimit = require( 'express-rate-limit')
 const helmet = require( 'helmet')
-const swaggerUI = require( 'swagger-ui-express')
+const swaggerUi = require( 'swagger-ui-express')
 
 
 const app = express()
 
-const docs = require('../docs')
+const swaggerFile = require('../../swagger-output.json')
  
 const v1routes = require( '#routes/v1/v1')
 
@@ -57,8 +57,8 @@ app.use(morgan("dev"))
 
 
 //& swagger ui documentation for api's 
-
-app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(docs));
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+// app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(docs));
 
 
 //& routes

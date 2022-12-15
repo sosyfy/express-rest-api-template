@@ -10,11 +10,24 @@ const crypto = require( "crypto")
 
 // ? sign up a user function
 exports.signUp =  async function ( req , res ,next ){
+       /*#swagger.tags = ['Users']
+        #swagger.description = 'Endpoint to sign in a specific user' */
+
+    /*	#swagger.parameters['obj'] = {
+            in: 'body',
+            description: 'User information.',
+            required: true,
+            schema: { $ref: "#/definitions/AddUser" }
+    } */
+
+    /* #swagger.security = [{
+            "apiKeyAuth": []
+    }] */
    try {
     const { email , password, name } = req.body 
     //& data validtion from frontend 
     if(!email || !password || !name ) {
-       return next( new Errors.ApiError())
+       return next( new Errors.ApiError())   // #swagger.responses[404]
     }
 
     //& Creating a user in the database 
@@ -47,6 +60,8 @@ exports.signUp =  async function ( req , res ,next ){
          message : "Email sent Successfully",
          info: "Check your email and follow the steps to activate your account"
      })
+
+
  
    } catch (error) {
      //& if the email wasnt sent we delete the  token from db 
@@ -145,6 +160,7 @@ exports.logInWithEmailAndPassword =  async function ( req ,res ,next ){
    const isPasswordCorrect = await user.isValidatedPassword(password)
 
    if(!isPasswordCorrect ) {
+      
        return next( new Errors.IncorrectEmailOrPasswordError())
    }
 
@@ -171,7 +187,19 @@ exports.logInWithEmailAndPassword =  async function ( req ,res ,next ){
 
 // ? logout  user function 
 exports.logout = async function  ( req , res ,next ){
-    
+     /* 	#swagger.tags = ['User']
+        #swagger.description = 'Endpoint to sign in a specific user' */
+
+    /*	#swagger.parameters['obj'] = {
+            in: 'body',
+            description: 'User information.',
+            required: true,
+            schema: { $ref: "#/definitions/AddUser" }
+    } */
+
+    /* #swagger.security = [{
+            "apiKeyAuth": []
+    }] */
    res.cookie('token' , null , { expires: new Date(Date.now()) , httpOnly : true } )
   
    res.status(httpStatus.OK).json({
@@ -236,6 +264,7 @@ exports.forgotPassword = async function  ( req , res ,next ){
  }
  
  // ? Reset password and create new one function 
+
 exports.passwordReset = async function  ( req , res ,next ){
  
     try {
